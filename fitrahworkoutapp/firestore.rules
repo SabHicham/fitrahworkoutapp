@@ -1,0 +1,97 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users to read and write their own user data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Allow authenticated users to read and write their own user programs
+    match /userPrograms/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Allow authenticated users to read and write their own objectives
+    match /userObjectives/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Allow authenticated users to read and write their own performances
+    match /userPerformances/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Allow admin to read, update and delete all user programs for management
+    match /userPrograms/{documentId} {
+      allow read, update, delete: if request.auth != null && 
+        request.auth.token.email == 'fitrah.workout@gmail.com';
+    }
+    
+    // Allow authenticated users to read exercises (needed for program generation)
+    match /exercises/{documentId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+        request.auth.token.email == 'fitrah.workout@gmail.com';
+    }
+    
+    // Allow authenticated users to read recipes (needed for nutrition)
+    match /recipes/{documentId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if request.auth != null && 
+        request.auth.token.email == 'fitrah.workout@gmail.com';
+    }
+    
+    // Allow authenticated users to read and write their own workout sessions
+    match /workoutSessions/{sessionId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Allow authenticated users to read and write their own nutrition logs
+    match /nutritionLogs/{logId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Allow authenticated users to read and write their own meal plans
+    match /mealPlans/{mealPlanId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Allow authenticated users to read and write their own workouts
+    match /workouts/{workoutId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Allow authenticated users to read and write their own food logs
+    match /foodLogs/{foodLogId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Allow authenticated users to read and write their own achievement unlocks
+    match /achievementUnlocks/{achievementId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Allow authenticated users to read and write their own user activities
+    match /userActivities/{activityId} {
+      allow read, write: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+    
+    // Admin-only collections for managing app data and statistics
+    match /adminStats/{documentId} {
+      allow read, write: if request.auth != null && 
+        request.auth.token.email == 'fitrah.workout@gmail.com';
+    }
+    
+    // Default deny rule for any other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
