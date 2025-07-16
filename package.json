@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "EXPO_NO_TELEMETRY=1 expo start",
     "start": "EXPO_NO_TELEMETRY=1 expo start",
-    "build": "expo export:web",
+    "build": "npx expo export:web",
     "lint": "expo lint"
   },
   "dependencies": {
